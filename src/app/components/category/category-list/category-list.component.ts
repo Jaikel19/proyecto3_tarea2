@@ -1,32 +1,31 @@
 import { Component, effect, inject } from '@angular/core';
-import { ProductService } from '../../../services/product.service';
-import { IProduct } from '../../../interfaces';
+import { CategoryService } from '../../../services/category.service';
 import { ICategory } from '../../../interfaces';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../../modal/modal.component';
-import { ProductFormComponent } from '../product-form/product-form.component';
+import { CategoryFormComponent } from '../category-form/category-form.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-product-list',
+  selector: 'app-category-list',
   standalone: true,
   imports: [
     CommonModule, 
     FormsModule,
     ModalComponent,
-    ProductFormComponent,
+    CategoryFormComponent,
     MatSnackBarModule
   ],
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  templateUrl: './category-list.component.html',
+  styleUrls: ['./category-list.component.scss']
 })
-export class ProductListComponent {
+export class CategoryListComponent {
   public search: String = '';
-  public productList: IProduct[] = [];
-  private service = inject(ProductService);
+  public categoryList: ICategory[] = [];
+  private service = inject(CategoryService);
   private snackBar = inject(MatSnackBar);
-  public currentProduct: IProduct = {
+  public currentCategory: ICategory = {
     name: '',
     description: ''
   };
@@ -34,26 +33,26 @@ export class ProductListComponent {
   constructor() {
     this.service.getAllSignal();
     effect(() => {      
-      this.productList = this.service.products$();
+      this.categoryList = this.service.categories$();
     });
   }
 
-  showDetail(product: IProduct, modal: any) {
-    this.currentProduct = {...product}; 
+  showDetail(category: ICategory, modal: any) {
+    this.currentCategory = {...category}; 
     modal.show();
   }
 
-  deleteProduct(product: IProduct) {
-    this.service.deleteProductSignal(product).subscribe({
+  deleteCategory(category: ICategory) {
+    this.service.deleteCategorySignal(category).subscribe({
       next: () => {
-        this.snackBar.open('Product deleted', 'Close', {
+        this.snackBar.open('Category deleted', 'Close', {
           horizontalPosition: 'right',
           verticalPosition: 'top',
           duration: 5 * 1000,
         });
       },
       error: (error: any) => {
-        this.snackBar.open('Error deleting product', 'Close', {
+        this.snackBar.open('Error deleting category', 'Close', {
           horizontalPosition: 'right',
           verticalPosition: 'top',
           panelClass: ['error-snackbar']
